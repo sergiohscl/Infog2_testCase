@@ -30,7 +30,7 @@ def create_client(
     if db.query(Client).filter(Client.cpf == data.cpf).first():
         raise HTTPException(status_code=400, detail="CPF já cadastrado.")
 
-    new_client = Client(**data.dict())
+    new_client = Client(**data.model_dump())
     db.add(new_client)
     db.commit()
     db.refresh(new_client)
