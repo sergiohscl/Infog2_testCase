@@ -8,6 +8,7 @@ from app.models.product import Product
 from app.models.client import Client
 from app.schemas.pedidos import PedidoCreate, PedidoOut, PedidoUpdate
 from app.core.deps import get_current_user
+from app.services.whatsapp import registrar_e_enviar_mensagem
 
 router = APIRouter()
 
@@ -81,6 +82,10 @@ def create_pedido(
     pedido = Pedido(cliente_id=data.cliente_id, produtos=produtos)
     db.add(pedido)
     db.commit()
+    mensagem = f"Olá {cliente.name}, seu pedido foi recebido com sucesso!"
+    registrar_e_enviar_mensagem(
+        phone=cliente.telefone, mensagem=mensagem
+    )
     db.refresh(pedido)
 
     return PedidoOut(
