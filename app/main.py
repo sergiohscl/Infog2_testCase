@@ -1,5 +1,7 @@
+import os
 from fastapi import FastAPI
-from app.routes import auth, client, debug
+from fastapi.staticfiles import StaticFiles
+from app.routes import auth, client, debug, product
 from app.core.database import engine, Base
 from fastapi.openapi.utils import get_openapi
 import sentry_sdk
@@ -9,7 +11,6 @@ sentry_sdk.init(
     send_default_pii=True,
 )
 
-
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -18,9 +19,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
+os.makedirs("static/img", exist_ok=True)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(debug.router, tags=["Debug"])
 app.include_router(auth.router, prefix="/auth", tags=["Autenticação"])
 app.include_router(client.router, prefix="/clients", tags=["Clientes"])
+app.include_router(product.router, prefix="/products", tags=["Produtos"])
 
 
 def custom_openapi():
