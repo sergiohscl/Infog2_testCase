@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from app.routes import auth, client, debug, product
+from app.routes import auth, client, debug, product, pedidos
 from app.core.database import engine, Base
 from fastapi.openapi.utils import get_openapi
 import sentry_sdk
@@ -26,6 +26,7 @@ app.include_router(debug.router, tags=["Debug"])
 app.include_router(auth.router, prefix="/auth", tags=["Autenticação"])
 app.include_router(client.router, prefix="/clients", tags=["Clientes"])
 app.include_router(product.router, prefix="/products", tags=["Produtos"])
+app.include_router(pedidos.router, prefix="/pedidos", tags=["Pedidos"])
 
 
 def custom_openapi():
